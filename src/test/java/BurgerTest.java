@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import praktikum.Bun;
 import praktikum.Burger;
@@ -20,14 +22,22 @@ import static praktikum.IngredientType.SAUCE;
 
 
 @RunWith(MockitoJUnitRunner.class)
+
 public class BurgerTest {
+
     @Test
     public void getPriceCorrect() {
 
         Burger burger = new Burger();
         List<Bun> buns = new ArrayList<>();
-        buns.add(new Bun("Test", 2f));
-        burger.ingredients.add(new Ingredient(SAUCE, "Test", 2f));
+      // buns.add(new Bun("Test", 2f));
+       Bun bun = Mockito.mock(Bun.class);
+        buns.add(bun);
+        Mockito.when(bun.getPrice()).thenReturn(2f);
+       //burger.ingredients.add(new Ingredient(SAUCE, "Test", 2f));
+        Ingredient ingredient= Mockito.mock(Ingredient.class);
+        Mockito.when(ingredient.getPrice()).thenReturn(2f);
+        burger.ingredients.add(ingredient);
         burger.setBuns(buns.get(0));
         float actualPrice= burger.getPrice();
         assertEquals("Another price", 6, actualPrice, 0.0f);
@@ -39,19 +49,30 @@ public class BurgerTest {
 
         Burger burger = new Burger();
         List<Bun> buns = new ArrayList<>();
-        buns.add(new Bun("Test", 2f));
-        burger.ingredients.add(new Ingredient(SAUCE, "Test", 2f));
+      //  buns.add(new Bun("Test", 2f));
+        Bun bun = Mockito.mock(Bun.class);
+        buns.add(bun);
+        Mockito.when(bun.getPrice()).thenReturn(2f);
+        Mockito.when(bun.getName()).thenReturn("Test");
+        //burger.ingredients.add(new Ingredient(SAUCE, "Test", 2f));
+        Ingredient ingredient= Mockito.mock(Ingredient.class);
+        Mockito.when(ingredient.getPrice()).thenReturn(2f);
+        Mockito.when(ingredient.getName()).thenReturn("Test");
+        Mockito.when(ingredient.getType()).thenReturn(SAUCE);
+        burger.ingredients.add(ingredient);
+
         burger.setBuns(buns.get(0));
-        String actualPrice= burger.getReceipt();
+
+        String actualReceipt= burger.getReceipt();
         String upBun ="(==== Test ====)";
         String inBurger="= sauce Test =";
         String downBun="(==== Test ====)";
         String priceBurger="Price: 6,000000";
-        MatcherAssert.assertThat(actualPrice, allOf(startsWith(upBun), containsString(inBurger), containsString(downBun),containsString(priceBurger)));
+        MatcherAssert.assertThat(actualReceipt, allOf(startsWith(upBun), containsString(inBurger), containsString(downBun),containsString(priceBurger)));
     }
-
     @Mock
     Bun bun;
+    Ingredient ingredient;
 
     @Test
     public void setBunsCorrect() {
@@ -62,11 +83,6 @@ public class BurgerTest {
         assertEquals(false, buns.isEmpty());
 
     }
-
-
-    @Mock
-    Ingredient ingredient;
-
     @Test
     public void addIngredientCorrect() {
 
